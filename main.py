@@ -8,7 +8,7 @@ import os.path
 import aiohttp
 import asyncio
 from typing import List, Iterable
-
+from utils.http import *
 from models.car_info import CarInfo
 from utils.optional import Optional
 
@@ -56,13 +56,7 @@ def parse_car(node) -> CarInfo:
     dict["description"] = node.select_one(".listing-desc-detail").text
     return CarInfo(dict)
 
-
-def fetch(url):
-    page = requests.get(url)
-    page.encoding = page.apparent_encoding
-    return page.text
-
-
+# TODO: add click
 def main():
     logger = logging.getLogger(__name__)
     logger.info('start parser')
