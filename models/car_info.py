@@ -11,7 +11,7 @@ class Gearbox(Enum):
 
 class CarInfo(dict):
 
-    __slots__ = ("title", "model", "year", "run", "gearbox", "wheel_drive", "refcode", "phone", "price", "description")
+    __slots__ = ("title", "model", "year", "run", "gearbox", "wheel_drive", "refcode", "phone", "price", "description", "href")
 
     def __init__(self, info: dict = None):
         if not info:
@@ -45,7 +45,7 @@ class CarInfo(dict):
 
     @staticmethod
     def get_fields():
-        return {"title", "model", "year", "run", "gearbox", "wheel_drive", "refcode", "phone", "price", "description"}
+        return {"title", "model", "year", "run", "gearbox", "wheel_drive", "refcode", "phone", "price", "description", "href"}
 
     @staticmethod
     def to_csv(cars: List[dict], filename: str):
