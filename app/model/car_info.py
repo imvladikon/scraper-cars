@@ -3,6 +3,15 @@ from enum import Enum
 import csv
 from typing import List
 
+from app.utils.misc import exception
+
+try:
+    import _pickle as pickle
+except ModuleNotFoundError:
+    import pickle
+
+logger = logging.getLogger(__name__)
+
 
 class Gearbox(Enum):
     Manual = 1,
@@ -10,8 +19,8 @@ class Gearbox(Enum):
 
 
 class CarInfo(dict):
-
-    __slots__ = ("title", "model", "year", "run", "gearbox", "wheel_drive", "refcode", "phone", "price", "description", "href")
+    __slots__ = (
+        "title", "model", "year", "run", "gearbox", "wheel_drive", "refcode", "phone", "price", "description", "href")
 
     def __init__(self, info: dict = None):
         if not info:
@@ -22,34 +31,39 @@ class CarInfo(dict):
     def __str__(self):
         return f"{self.title} {self.model} {self.price}"
 
+    @exception(logger, reraise=False)
     def __getattr__(self, name):
-        try:
-            return self[name]
-        except KeyError as e:
-            logger = logging.getLogger(__name__)
-            logger.error(e)
+        return self[name]
 
+    @exception(logger, reraise=False)
     def __setattr__(self, name, value):
-        try:
-            self[name] = value
-        except KeyError as e:
-            logger = logging.getLogger(__name__)
-            logger.error(e)
+        self[name] = value
 
+    @exception(logger, reraise=False)
     def __delattr__(self, name):
-        try:
-            del self[name]
-        except KeyError as e:
-            logger = logging.getLogger(__name__)
-            logger.error(e)
+        del self[name]
 
     @staticmethod
     def get_fields():
-        return {"title", "model", "year", "run", "gearbox", "wheel_drive", "refcode", "phone", "price", "description", "href"}
+        return {"title", "model", "year", "run", "gearbox", "wheel_drive", "refcode", "phone", "price", "description",
+                "href"}
 
     @staticmethod
+    @exception(logger, reraise=False)
     def to_csv(cars: List[dict], filename: str):
         with open(filename, "w") as f:
             wr = csv.DictWriter(f, delimiter="\t", fieldnames=list(CarInfo.get_fields()))
             wr.writeheader()
             wr.writerows(cars)
+
+    @staticmethod
+    @exception(logger, reraise=False)
+    def to_pickle(cars: List[dict], filename: str):
+        with open(filename, 'wb') as f:
+            pickle.dump(cars, f, pickle.HIGHEST_PROTOCOL)
+
+    @staticmethod
+    @exception(logger, reraise=False)
+    def from_pickle(filename: str) -> List[dict]:
+        with open(filename, 'rb') as f:
+            return pickle.load(f)

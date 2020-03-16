@@ -65,6 +65,18 @@ class Optional(object):
         if self._value is not None:
             func(self._value)
 
+    def if_present_or_else(self, apply: callable, apply_else: callable):
+        if self._value is not None:
+            apply(self._value)
+        else:
+            apply_else(self._value)
+
+    def or_else_throw(self, e):
+        if self._value is not None:
+            return self.get()
+        else:
+            raise Exception(e)
+
     def is_present(self) -> bool:
         return self._value is not None
 

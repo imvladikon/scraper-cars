@@ -12,6 +12,7 @@ MAIN_URL = "https://www.classiccarsforsale.co.uk/all?page={}"
 BASE_URL = "https://www.classiccarsforsale.co.uk"
 pages = range(1, 75)
 logger = None
+project_dir = os.path.dirname(os.path.realpath(__file__))
 
 
 def parse_cars(url) -> Iterable[CarInfo]:
@@ -70,8 +71,21 @@ def main(output_filename):
     CarInfo.to_csv(cars, os.path.join(project_dir, "data", output_filename))
 
 
+def create_logger():
+    import time
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.ERROR)
+    fh = logging.FileHandler(os.path.join(project_dir, "logs", f"{time.strftime('%H_%M_%b_%d_%Y')}.log"))
+    fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    formatter = logging.Formatter(fmt)
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
+    return logger
+
+
 if __name__ == '__main__':
     logger = logging.getLogger(__name__)
+    # logger = create_logger()
     log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     logging.basicConfig(level=logging.INFO, format=log_fmt)
     main()
