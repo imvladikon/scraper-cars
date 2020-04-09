@@ -1,4 +1,4 @@
-import functools
+from functools import wraps
 
 
 def exception(logger, reraise=False):
@@ -10,17 +10,12 @@ def exception(logger, reraise=False):
     """
 
     def decorator(func):
-
+        @wraps(func)
         def wrapper(*args, **kwargs):
             try:
                 return func(*args, **kwargs)
             except Exception as e:
-                # log the exception
-                err = "There was an exception in  "
-                err += func.__name__
-                logger.exception(err)
-
-            # re-raise the exception
+                logger.exception(f"There was an exception in {func.__name__}")
             if reraise:
                 raise
 

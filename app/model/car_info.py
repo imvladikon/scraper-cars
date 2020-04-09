@@ -2,13 +2,8 @@ import logging
 from enum import Enum
 import csv
 from typing import List
-
 from app.utils.misc import exception
-
-try:
-    import _pickle as pickle
-except ModuleNotFoundError:
-    import pickle
+import pickle
 
 logger = logging.getLogger(__name__)
 
