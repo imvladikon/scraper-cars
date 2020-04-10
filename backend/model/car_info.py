@@ -2,7 +2,7 @@ import logging
 from enum import Enum
 import csv
 from typing import List
-from app.utils.misc import exception
+from backend.utils.misc import exception
 import pickle
 
 logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ class Gearbox(Enum):
     Auto = 2
 
 
-class CarInfo(dict):
+class CarInfoDTO(dict):
     __slots__ = (
         "title", "model", "year", "run", "gearbox", "wheel_drive", "refcode", "phone", "price", "description", "href")
 
@@ -47,7 +47,7 @@ class CarInfo(dict):
     @exception(logger, reraise=False)
     def to_csv(cars: List[dict], filename: str):
         with open(filename, "w") as f:
-            wr = csv.DictWriter(f, delimiter="\t", fieldnames=list(CarInfo.get_fields()))
+            wr = csv.DictWriter(f, delimiter="\t", fieldnames=list(CarInfoDTO.get_fields()))
             wr.writeheader()
             wr.writerows(cars)
 

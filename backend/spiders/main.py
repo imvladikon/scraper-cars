@@ -3,10 +3,10 @@ import click
 from bs4 import BeautifulSoup
 import os.path
 from typing import Iterable
-from app.utils.http import *
-from app.model.car_info import CarInfo
-from app.utils.optional import Optional
-from app.utils.strings import blank_string
+from backend.utils.http import *
+from backend.model.car_info import CarInfoDTO
+from backend.utils.optional import Optional
+from backend.utils.strings import blank_string
 
 MAIN_URL = "https://www.classiccarsforsale.co.uk/all?page={}"
 BASE_URL = "https://www.classiccarsforsale.co.uk"
@@ -15,14 +15,14 @@ logger = None
 project_dir = os.path.dirname(os.path.realpath(__file__))
 
 
-def parse_cars(url) -> Iterable[CarInfo]:
+def parse_cars(url) -> Iterable[CarInfoDTO]:
     html = fetch(url)
     soup = BeautifulSoup(html, 'html.parser')
     return (parse_car(node) for node in soup.select(".listing"))
 
 
-def parse_car(node) -> CarInfo:
-    car = CarInfo()
+def parse_car(node) -> CarInfoDTO:
+    car = CarInfoDTO()
     car.phone = Optional.of(node.select_one(".fa-phone")).map(lambda e: e.text.strip()).get_or_else("")
     car.year = Optional.of(node.select_one(".listing-desc-year")).map(lambda e: e.text.strip()).get_or_else("")
     car.price = Optional.of(node.select_one(".listing-desc-price")).map(
@@ -68,7 +68,7 @@ def main(output_filename):
             cars.append(car)
         logger.info(f"fetching {page} page")
     output_filename = output_filename or "cars.csv"
-    CarInfo.to_csv(cars, os.path.join(project_dir, "data", output_filename))
+    CarInfoDTO.to_csv(cars, os.path.join(project_dir, "data", output_filename))
 
 
 def create_logger():

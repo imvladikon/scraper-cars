@@ -1,5 +1,6 @@
+import time
 from functools import wraps
-
+from decorator import decorator
 
 def exception(logger, reraise=False):
     """
@@ -22,3 +23,14 @@ def exception(logger, reraise=False):
         return wrapper
 
     return decorator
+
+@decorator
+def warn_slow(func, logging, timelimit=60, *args, **kw):
+    t0 = time.time()
+    result = func(*args, **kw)
+    dt = time.time() - t0
+    if dt > timelimit:
+        logging.warn('%s took %d seconds', func.__name__, dt)
+    else:
+        logging.info('%s took %d seconds', func.__name__, dt)
+    return result
