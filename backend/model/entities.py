@@ -19,7 +19,7 @@ class DB:
                          "href")
 
             id = PrimaryKey(int, auto=True)
-            title = Optional(str, nullable=True)
+            title = Optional(str, 100, nullable=True)
             model = Optional(str, nullable=True)
             year = Optional(int, nullable=True)
             run = Optional(str, nullable=True)
@@ -27,12 +27,12 @@ class DB:
             wheel_drive = Optional(str, nullable=True)
             refcode = Optional(str, nullable=True)
             phone = Optional(str, nullable=True)
-            price = Optional(Decimal)
+            price = Optional(Decimal, precision=2)
             description = Optional(str, nullable=True)
             href = Optional(str, nullable=True)
 
         class Gearbox(self.model.Entity):
-            code = Required(int)
+            code = Required(int, unique=True)
             title = Required(str)
             owner = Required(CarInfo)
 

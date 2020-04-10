@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_restful import Api
 from flask_injector import FlaskInjector, request
-from pony.orm import Database
-from injector import Module, Injector, inject, singleton
+from injector import singleton
+
+from backend.api import API_HANDLERS
 from backend.config import config
 from pony.flask import Pony
 
@@ -14,18 +16,21 @@ app.config.from_object(__name__)
 app.config.update(config)
 Pony(app)
 CORS(app, resources=r'/*', allow_headers="Content-Type")
-db = DB()
+api = Api(app=app)
+
+for handler in API_HANDLERS:
+    api.add_resource(handler, handler.ENDPOINT)
 
 
 def configure(binder):
-    # db = Database(**args)
-    # db.model.generate_mapping(create_tables=True)
-    binder.bind(Database, to=db, scope=request)
     for service in SERVICES:
         binder.bind(service, scope=request)
-    # binder.bind(CarInfoService, to=car_info_service, scope=request)
+    db = DB(**app.config['PONY'])
+    db.model.generate_mapping(create_tables=True)
+    binder.bind(DB, to=db, scope=singleton)
+    for service in SERVICES:
+        binder.bind(service, scope=singleton)
 
 
-FlaskInjector(app=app, modules=[configure])
+injector = FlaskInjector(app=app, modules=[configure])
 
-import backend.views

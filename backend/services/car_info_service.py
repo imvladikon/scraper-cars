@@ -1,19 +1,18 @@
 from flask_injector import inject
 from pony.orm import db_session
-from backend.model.entities import Database
+from backend.model.entities import DB
 
 class CarInfoService:
     @inject
-    def __init__(self, db: Database):
+    def __init__(self, db: DB):
         self.db = db
 
     @db_session
     def find_by_id(self, id):
         entry = self.db.model.CarInfo[id]
-        if entry is None:
-            car_info = self.db.model.CarInfo()
-            return car_info.to_dict()
-        return entry.to_dict()
+        if entry:
+            return entry.to_dict()
+        return {"message": "Car-info not found."}, 404
 
     @db_session
     def find_by_title(self, title):
