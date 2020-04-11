@@ -4,7 +4,10 @@ from enum import Enum
 import click
 import asyncio
 
-from contextlib2 import suppress
+try:
+    from contextlib2 import suppress
+except:
+    from contextlib import suppress
 
 # from backend import app, flask_injector, Scraper
 import os
@@ -16,17 +19,17 @@ sys.path.append(os.path.dirname(os.getcwd()))
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api
-from flask_injector import FlaskInjector, request
+from flask_injector import FlaskInjector
 from injector import singleton
 
 from backend.api import API_HANDLERS
 from backend.api.api_json_encoder import ApiJSONEncoder
-from backend.config import config
+from backend.config.config import config
 from pony.flask import Pony
 
 from backend.model.entities import DB
 from backend.scrape import Scraper
-from backend.services import SERVICES, CarInfoService
+from backend.services import SERVICES
 
 app = Flask(__name__)
 app.config.from_object(__name__)

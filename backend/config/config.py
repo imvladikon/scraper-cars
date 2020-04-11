@@ -4,9 +4,10 @@ config = dict(
     SECRET_KEY = '',
     PONY = {
         'provider': 'mysql',
-        'host': 'localhost',
+        'host': 'db',
+        'port': 3306,
         'user': 'root',
-        'passwd': '1234',
+        'password': '1234',
         'db': 'cars'
     }
 )
