@@ -15,16 +15,6 @@ services:
     environment:
       - MYSQL_DATABASE=cars
       - MYSQL_ROOT_PASSWORD=1234
-  backend:
-    build: backend
-    restart: always
-    secrets:
-      - db-password
-    ports:
-      - 5000:5000
-    networks:
-      - backnet
-      - frontnet
 volumes:
   db-data:
 secrets:
@@ -32,4 +22,3 @@ secrets:
     file: db/password.txt
 networks:
   backnet:
-  frontnet:

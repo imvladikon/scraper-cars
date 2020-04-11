@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from flask import jsonify
 from flask_restful import Resource, reqparse
 from flask_injector import inject
@@ -15,19 +17,19 @@ class CarInfo(Resource):
         self.parser = reqparse.RequestParser()
         self.parser.add_argument(
             "price",
-            type=float,
+            type=Decimal,
             required=True,
             help="The \"price\" field cannot be left blank!"
         )
         self.parser.add_argument(
-            "store_id",
+            "id",
             type=str,
             required=True,
-            help="Cannot insert item without a store ID!"
+            help="Cannot insert item without a ID!"
         )
 
     def get(self, entry_id):
-        return self.car_info_service.find_by_id(entry_id)
+        return jsonify(self.car_info_service.find_by_id(entry_id))
 
 
 class CarInfoList(Resource):
@@ -38,4 +40,4 @@ class CarInfoList(Resource):
         self.car_info_service = car_info_service
 
     def get(self):
-        return self.car_info_service.list()
+        return jsonify(self.car_info_service.list())

@@ -1,6 +1,9 @@
 import time
+from decimal import Decimal, ROUND_UP
 from functools import wraps
 from decorator import decorator
+from functools import singledispatch
+
 
 def exception(logger, reraise=False):
     """
@@ -24,6 +27,7 @@ def exception(logger, reraise=False):
 
     return decorator
 
+
 @decorator
 def warn_slow(func, logging, timelimit=60, *args, **kw):
     t0 = time.time()
@@ -34,3 +38,25 @@ def warn_slow(func, logging, timelimit=60, *args, **kw):
     else:
         logging.info('%s took %d seconds', func.__name__, dt)
     return result
+
+
+def parse(str, default):
+    return try_parse(default, str)
+
+
+@singledispatch
+def try_parse(default, str):
+    try:
+        return type(default)(str)
+    except:
+        pass
+    return default
+
+
+@try_parse.register(Decimal)
+def try_parse_decimal(default, str):
+    try:
+        return Decimal(str.replace(",", "."))
+    except:
+        pass
+    return default

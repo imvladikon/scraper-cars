@@ -6,6 +6,7 @@ from decimal import Decimal
 
 from backend.model.car_info import CarInfoDTO
 
+#https://docs.ponyorm.org/api_reference.html
 
 class DB:
 
@@ -27,8 +28,8 @@ class DB:
             wheel_drive = Optional(str, nullable=True)
             refcode = Optional(str, nullable=True)
             phone = Optional(str, nullable=True)
-            price = Optional(Decimal, precision=2)
-            description = Optional(str, nullable=True)
+            price = Optional(Decimal, precision=18, scale=4)
+            description = Optional(LongStr, nullable=True)
             href = Optional(str, nullable=True)
 
         class Gearbox(self.model.Entity):

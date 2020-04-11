@@ -1,3 +1,4 @@
+import dataclasses
 import logging
 from enum import Enum
 import csv
@@ -12,7 +13,7 @@ class Gearbox(Enum):
     Manual = 1,
     Auto = 2
 
-
+# TODO: @dataclasses
 class CarInfoDTO(dict):
     __slots__ = (
         "title", "model", "year", "run", "gearbox", "wheel_drive", "refcode", "phone", "price", "description", "href")
